@@ -43,6 +43,32 @@ velo_cc %>%
   geom_line(aes(x = mois, y = sci_predict))
 
 
+# courbe avec GLM - poisson ---------------------------------------------------------
+
+velo_glm <- glm(total ~ mois, data = velo_cc, family = "poisson")
+
+velo_predict <- velo_cc %>% 
+  mutate(new_y = predict(velo_glm, type = "response"),
+         pred_y = rpois(length(new_y), new_y))
+
+velo_cc %>% 
+  ggplot() + 
+  geom_bar(aes(x = mois, y = total), stat = "identity") +
+  geom_line(aes(x = mois, y= pred_y), data = velo_predict, col = "green")
+
+# courbe avec GLM - gaussian ---------------------------------------------------------
+
+velo_glm <- glm(total ~ mois, data = velo_cc, family = "gaussian")
+
+velo_predict <- velo_cc %>% 
+  mutate(new_y = predict(velo_glm, type = "response"),
+         pred_y = rnorm(length(new_y), new_y))
+
+velo_cc %>% 
+  ggplot() + 
+  geom_bar(aes(x = mois, y = total), stat = "identity") +
+  geom_line(aes(x = mois, y= pred_y), data = velo_predict, col = "green")
+
 # Application de la courbe aux données de 2018 -------------------------------
 
 velo_2018 <- read.csv("velo2018.csv")
