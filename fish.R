@@ -43,3 +43,5 @@ fishtubes <- bf(Weight ~ a*(Height/2)^2,
    nl = TRUE)
 
 get_prior(fishtubes, data = fish)
+
+ft_model <- brm(fishtubes, data = fish)
